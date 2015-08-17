@@ -1,0 +1,101 @@
+----item----
+version: 1
+id: {FB630178-A007-4AEE-A696-3FC9C31E6AF9}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Reports/Order Reports/Orders
+parent: {04039C3A-131D-46AC-97FD-283B823BFE73}
+name: Orders
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 2569
+
+$result = Read-Variable -Parameters `
+    @{ Name="ShopContext"; Title="Shop Name"; Value="sherpa_winter_outfitters" },
+    @{ Name="Info"; Title="Customer Name"; Editor="info"; },
+    @{ Name="FirstName"; Title=""; Tooltip="First"; Columns=6 },
+    @{ Name="LastName"; Title=""; Tooltip="Last"; Columns=6 },
+    @{ Name="Info"; Title="Order Date"; Editor="info"; },
+    @{ Name="FromDate"; Title=""; Tooltip="From"; Columns=3; Editor="date"; Value=[System.DateTime]::Now.AddDays(-7) },
+    @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=3; Editor="date"; Value=[System.DateTime]::Now } `
+    -Title "Order Report Parameters" -Width 650 -Height 660 -OkButtonName "Run Report" -CancelButtonName "Abort" -ShowHints
+
+if($result -ne "ok")
+{
+    Exit
+}
+
+Switch-AcShopContext -Site $ShopContext -ScriptBlock {
+    $orderManager = Resolve-AcObject ActiveCommerce.Orders.Management.IOrderManager``1[ActiveCommerce.Orders.Order]
+    $orders = new-query $orderManager.GetOrders() | defer-query
+    if ($FirstName)
+    {
+        $orders = $orders | where-linqobject ('BuyerCustomerParty.Party.Person.FirstName == "' + $FirstName + '"') ` | defer-query
+    }
+    if ($LastName)
+    {
+        $orders = $orders | where-linqobject ('BuyerCustomerParty.Party.Person.FamilyName == "' + $LastName + '"') ` | defer-query
+    }
+    if ($FromDate)
+    {
+        $orders = $orders | where-linqobject "IssueDate >= DateTime($($FromDate.Year), $($FromDate.Month), $($FromDate.Day))" | defer-query
+    }
+    if ($ToDate)
+    {
+        $orders = $orders | where-linqobject "IssueDate <= DateTime($($ToDate.Year), $($ToDate.Month), $($ToDate.Day) + 1)" | defer-query
+    }
+    $orders = $orders | sort-linqobject "IssueDate desc"
+    
+    $props = @{
+        InfoTitle = "Active Commerce Orders"
+        PageSize = 100
+    }
+    $orders | Show-ListView @props -Property `
+        @{Label="#"; Expression={$_.OrderId}},
+        @{Label="Date"; Expression={$_.IssueDate}},
+        @{Label="State"; Expression={$_.State.Name}},
+        @{Label="Substates"; Expression={($_.State.Substates | where {$_.Active} | % {$_.Abbreviation}) -join ","}},
+        @{Label="First Name"; Expression={$_.BuyerCustomerParty.Party.Person.FirstName}},
+        @{Label="Last Name"; Expression={$_.BuyerCustomerParty.Party.Person.FamilyName}},
+        @{Label="Items"; Expression={($_.OrderLines | % {$_.LineItem.Quantity} | Measure-Object -Sum).Sum}},
+        @{Label="Total"; Expression={$_.AnticipatedMonetaryTotal.TaxInclusiveAmount.Value.ToString("0.00")}}
+}
+
+----version----
+language: en
+version: 1
+revision: cb0225fa-9038-4f4f-9341-c847557dbf2c
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20150812T161659Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+cb0225fa-9038-4f4f-9341-c847557dbf2c
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 35
+
+20150813T020549:635750283498350000Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

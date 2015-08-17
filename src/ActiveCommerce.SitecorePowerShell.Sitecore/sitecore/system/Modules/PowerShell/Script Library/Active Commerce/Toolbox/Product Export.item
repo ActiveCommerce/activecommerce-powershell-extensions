@@ -1,0 +1,121 @@
+----item----
+version: 1
+id: {5B883A43-7114-4CFE-9B6F-08919C49B68D}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Toolbox/Product Export
+parent: {CD416B3C-A14E-40E7-91E8-6FE00494E991}
+name: Product Export
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 2543
+
+$fields = @("Product Code", "Name", "EAN", "SKU", "Title", "Short Description", "Description", "Stock", "Hidden", "Weight", "Meta Description", "SEO Title")
+
+$result = Read-Variable -Parameters `
+    @{ Name="ExportRoot"; Title="Export Start Item"; Root="/sitecore/commerce/products"; Editor="item" } `
+    -Description "Specify parameters for the product export" `
+    -Title "Export Options" -Width 650 -Height 400 -OkButtonName "Export" -CancelButtonName "Abort"
+
+if ($result -ne "ok")
+{
+    Exit
+}
+
+$rootId = $ExportRoot.ID.ToShortID().ToString().ToLowerInvariant()
+$skinnyItems = Find-Item -Index ac_products_master_index `
+                         -Criteria @{ Filter="Equals"; Field="_path"; Value=$rootId },
+                                   @{ Filter="Equals"; Field="_latestversion"; Value=1 }
+if (-not $skinnyItems)
+{
+    Show-Alert "No products found"
+    Exit
+}
+
+$products = @()
+foreach($skinnyItem in $skinnyItems)
+{
+    $productFields = [ordered]@{
+        ID = $skinnyItem.ItemId
+        ItemName = $skinnyItem.Name
+    }
+    $template = Get-Item -Path master: -ID $skinnyItem.TemplateId
+    $productFields.Add("Template", $template.Paths.FullPath)
+    $item = $skinnyItem.GetItem() | Wrap-Item
+    $item | Get-ItemField -ReturnType Field -Name $fields | Select Name, Value | %{
+        $productFields.Add($_.Name, $_.Value)
+    }
+    
+    #expand pricing field
+    $priceXml = [xml]$item.Price
+    $priceCategories = Get-ChildItem master:/sitecore/system/Modules/Ecommerce/PriceMatrix
+    foreach($category in $priceCategories)
+    {
+        foreach($priceLevel in ($category | Get-ChildItem))
+        {
+            $price = $null
+            $xpath = "/PriceMatrix/structure/categories/category[@id='$($category.Name)']/items/item[@id='$($priceLevel.Name)']/price"
+            $priceNode = $priceXml.SelectSingleNode($xpath)
+            if ($priceNode)
+            {
+                $price = $priceNode.InnerText
+            }
+            $productFields.Add("Price-$($category.Name)-$($priceLevel.Name)", $price)
+        }
+    }
+    $products += New-Object PSObject -Property $productFields
+}
+
+$exportPath = "$SitecoreDataFolder\productexports"
+if (-not (Test-Path $exportPath))
+{
+    New-Item $exportPath -type directory   
+}
+$exportPath = "$exportPath\productexport-" + [DateTime]::Now.ToString("yyyyMMddHHmmss") + ".csv"
+$products | Export-Csv $exportPath -Encoding UTF8 -NoType
+Send-File -Path $exportPath -Message "Your export is ready. Click to download."
+----field----
+field: {06D5295C-ED2F-4A54-9BF2-26228D113318}
+name: __Icon
+key: __icon
+content-length: 42
+
+activecommerce-icons/32x32/logo-orange.png
+----version----
+language: en
+version: 1
+revision: 4f4bfe50-798c-4c4c-b1a1-05d8418b80a0
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20150813T184815Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+4f4bfe50-798c-4c4c-b1a1-05d8418b80a0
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 35
+
+20150814T032521:635751195213768000Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

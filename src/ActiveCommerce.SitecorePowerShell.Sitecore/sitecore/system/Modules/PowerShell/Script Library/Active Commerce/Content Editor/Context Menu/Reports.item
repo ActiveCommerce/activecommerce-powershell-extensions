@@ -1,0 +1,71 @@
+----item----
+version: 1
+id: {99D1ED99-3BC1-44F2-8AB4-7DCE5FB92AB4}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Content Editor/Context Menu/Reports
+parent: {370D568F-2FDE-4A17-B8AC-F62B156FAC8E}
+name: Reports
+master: {00000000-0000-0000-0000-000000000000}
+template: {AB154D3D-1126-4AB4-AC21-8B86E6BD70EA}
+templatekey: PowerShell Script Library
+
+----field----
+field: {613D128B-7BF2-40F4-84CB-6717408F9806}
+name: ShowRule
+key: showrule
+content-length: 321
+
+<ruleset>
+  <rule uid="{A0A8B199-5437-4023-9E85-B15F3BCD12AA}">
+    <conditions>
+      <condition id="{4B889F07-94D4-4371-B522-9FFE8AF0BE12}" uid="4AF4D206F5454DE7919825422C3E43C9" operatorid="{F8641C26-EE27-483C-9FEA-35529ECC8541}" value="/sitecore/commerce/products/(.+)" />
+    </conditions>
+  </rule>
+</ruleset>
+----field----
+field: {05EECF47-0BB9-4B85-B926-0BC6DD987EC8}
+name: EnableRule
+key: enablerule
+content-length: 0
+
+
+----field----
+field: {06D5295C-ED2F-4A54-9BF2-26228D113318}
+name: __Icon
+key: __icon
+content-length: 42
+
+activecommerce-icons/32x32/logo-orange.png
+----version----
+language: en
+version: 1
+revision: 1de808e5-d81b-4236-b7a5-91e86d02958c
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20150813T155006Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+1de808e5-d81b-4236-b7a5-91e86d02958c
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 35
+
+20150814T032116:635751192768780000Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

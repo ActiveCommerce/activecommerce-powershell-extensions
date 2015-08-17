@@ -1,0 +1,252 @@
+----item----
+version: 1
+id: {5D730A46-B54B-4DFB-87EE-8F8BA402B3AA}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Toolbox/Product Import
+parent: {CD416B3C-A14E-40E7-91E8-6FE00494E991}
+name: Product Import
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 6452
+
+$messages = @()
+Function Add-Message([Parameter(Mandatory=$True,Position=1)]$message, [Switch]$Important, [Switch]$Error)
+{
+    if ($Error)
+    {
+        Write-Host $message -foregroundcolor red
+    }
+    elseif ($Important)
+    {
+        Write-Host $message -foregroundcolor yellow
+    }
+    else
+    {
+        Write-Host $message
+    }
+}
+
+Function CreateOrFind-Item($product, $createPath, $simulate)
+{
+    if ($product.ID)
+    {
+        $item = Get-Item master: -ID $product.ID
+        if ($item)
+        {
+            Add-Message "Updating existing item $($item.ID)" -Important
+        }
+        else
+        {
+            Add-Message "Could not find existing item $($item.ID)" -Error
+        }
+        return $item
+    }    
+    
+    if (-not $product.Template)
+    {
+        Add-Message "Found product missing both ID and Template, can't create new product" -Error
+        return $null
+    }
+    
+    if (-not $product.ItemName)
+    {
+        Add-Message "Found product missing both ID and item name, can't create new product" -Error
+        return $null
+    }
+    
+    $itemNameError = [Sitecore.Data.Items.ItemUtil]::GetItemNameError($product.ItemName)
+    if ($itemNameError)
+    {
+        Add-Message "Found product with invalid item name: $itemNameError" -Error
+        return $null
+    }
+    
+    $templatePath = "master:" + $product.Template.Replace("/", "\")
+    $template = Get-Item $templatePath
+    if (-not $template)
+    {
+        Add-Message "Found invalid template $($product.Template)" -Error
+        return $null
+    }
+    
+    if (-not $simulate)
+    {
+        $item = New-Item -ItemType $product.Template -Name $product.ItemName -Path $createPath.ProviderPath
+        Add-Message "Created new product $($item.Paths.FullPath)" -Important
+        return $item
+    }
+    else
+    {
+        Add-Message "Would have created new product $($product.ItemName) at $($createPath.Paths.FullPath)" -Important
+        return $null
+    }
+}
+
+Function Update-ItemData($item, $product, $simulate)
+{
+    $priceFields = $product.psobject.properties | where { $_.Name.StartsWith("Price-") } | Select Name, Value
+    $dontUpdate = @("ID", "Template", "ItemName")
+    $dontUpdate += ($priceFields | %{$_.Name})
+    $fields = $product.psobject.properties | where { -not $dontUpdate.Contains($_.Name) } | Select Name, Value
+    Add-Message "Updating data on item $($item.Paths.FullPath)" -Important
+    if (-not $simulate)
+    {
+        $item.Editing.BeginEdit()
+    }
+    foreach($field in $fields)
+    {
+        $item.Fields.ReadAll()
+        if (-not $item.Fields[$field.Name])
+        {
+            Add-Message "Item does not contain field $($field.Name)"
+            continue
+        }
+        Add-Message "Setting $($field.Name) to $($field.Value)"
+        if (-not $simulate)
+        {
+            $item[$field.Name] = $field.Value
+        }
+    }
+    Update-Prices -item $item -product $product -priceFields $priceFields -simulate $simulate
+    if (-not $simulate)
+    {
+        $item.Editing.EndEdit() | out-null
+    }
+}
+
+Function Update-Prices($item, $product, $priceFields, $simulate)
+{
+    $priceXml = [xml]($item.Price)
+    foreach($priceField in $priceFields)
+    {
+        $split = $priceField.Name.Split("-")
+        $categoryId = $split[1]
+        $itemId = $split[2]
+        $categoryNode = $priceXml.SelectSingleNode("/PriceMatrix/structure/categories/category[@id='$categoryId']")
+        if (-not $categoryNode)
+        {
+            $categoryNode = $priceXml.CreateElement("category")
+            $categoryNode.SetAttribute("id", $categoryId) | out-null
+            $categoryNode.AppendChild($priceXml.CreateElement("items")) | out-null
+            $priceXml.PriceMatrix.structure.categories.AppendChild($categoryNode) | out-null
+        }
+        $itemNode = $categoryNode.SelectSingleNode("./items/item[@id='$itemId']")
+        if (-not $itemNode)
+        {
+            $itemNode = $priceXml.CreateElement("item")
+            $itemNode.SetAttribute("id", $itemId) | out-null
+            $itemNode.AppendChild($priceXml.CreateElement("price")) | out-null
+            $categoryNode.SelectSingleNode("./items").AppendChild($itemNode) | out-null
+        }
+        $itemNode.price = if ($priceField.Value) { $priceField.Value } else { [string]::Empty }
+    }
+    Write-Host "Setting Price to $($priceXml.OuterXml)"
+    if (-not $simulate)
+    {
+        $item["Price"] = $priceXml.OuterXml
+    }
+}
+
+$importPath = "$SitecoreDataFolder\productimports"
+if (-not (Test-Path $importPath))
+{
+    New-Item $importPath -type directory   
+}
+
+$importFile = Receive-File -Path $importPath -Title "Product Data Import" -Description "Please provide a CSV file containing product data. It should be a comma-delimited UTF8 file."
+$products = Import-Csv -Path $importFile -Encoding UTF8
+$first = $products | select -first 1
+if (-not $products -or -not $first."Product Code" -or -not $first.Template)
+{
+    Show-Alert "This file does not appear to be a valid product CSV."
+    Remove-Item $importFile
+    Exit
+}
+
+$result = Read-Variable -Parameters `
+    @{ Name="ImportRoot"; Title="Import Root Item"; Tooltip="Location for any new products"; Root="/sitecore/commerce/products"; Editor="item" },
+    @{ Name="UpdateExisting"; Title="Update Existing Products"; Value=$true ; Columns=5 },
+    @{ Name="TestOnly"; Title="Test and Preview Only"; Tooltip="Get a report of what this import would do if executed"; Value=$false; Columns=7 } `
+    -Description "Specify parameters for the product import" `
+    -Title "Export Options" -Width 650 -Height 400 -OkButtonName "Start Import" -CancelButtonName "Abort" -ShowHints
+
+foreach($product in $products)
+{
+    if ($product.ID -and -not $UpdateExisting)
+    {
+        Add-Message "Skipping $($product.ID) because Update Existing is disabled"
+        continue
+    }
+    try
+    {
+        $item = CreateOrFind-Item -product $product -createPath $ImportRoot -simulate $TestOnly
+        if (-not $item)
+        {
+            continue
+        }
+        Update-ItemData -item $item -product $product -simulate $TestOnly
+    }
+    catch
+    {
+        Add-Message "Exception creating or updating item: $_.Exception"
+        Add-Message ($product | out-string)
+        continue
+    }
+}
+
+Show-Result -Text -Title "Import Results"
+
+
+----field----
+field: {06D5295C-ED2F-4A54-9BF2-26228D113318}
+name: __Icon
+key: __icon
+content-length: 42
+
+activecommerce-icons/32x32/logo-orange.png
+----field----
+field: {BA3F86A2-4A1C-4D78-B63D-91C2779C1B5E}
+name: __Sortorder
+key: __sortorder
+content-length: 3
+
+150
+----version----
+language: en
+version: 1
+revision: 25eac4db-f00d-49cd-9762-afeaa99165f2
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20150813T204606Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+25eac4db-f00d-49cd-9762-afeaa99165f2
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 35
+
+20150814T032345:635751194252652000Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

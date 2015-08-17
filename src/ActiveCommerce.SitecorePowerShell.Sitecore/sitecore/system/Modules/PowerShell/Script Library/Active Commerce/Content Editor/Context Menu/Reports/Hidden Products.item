@@ -1,0 +1,89 @@
+----item----
+version: 1
+id: {AF83EBE5-D71C-4E73-8491-53F85279F445}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Content Editor/Context Menu/Reports/Hidden Products
+parent: {99D1ED99-3BC1-44F2-8AB4-7DCE5FB92AB4}
+name: Hidden Products
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {1C76313E-3C8C-4807-A826-135D10C39299}
+name: ShowRule
+key: showrule
+content-length: 0
+
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 774
+
+$item = get-item .
+if ($item.TemplateName.EndsWith("Repository")) {
+	$result = Show-Confirm "You've selected the entire product repository. This will probably take a while. Are you sure you want to continue?"
+	
+	if($result -ne "yes") {
+		Close-Window
+		Exit
+	}
+}
+
+$items = Get-ChildItem -Recurse | Where-Object { $_.Hidden -ne $null -and $_.Hidden -eq "1"}
+if ($items -eq $null) {
+    Show-Alert "No items found!"
+    Close-Window
+    Exit
+}
+$items | Show-ListView -property `
+    @{Label="Name"; Expression={$_.DisplayName}}, `
+    @{Label="Stock"; Expression={$_["Stock"]}}, `
+    @{Label="Path"; Expression={$_.Paths.FullPath}} `
+    -Title "Hidden Products" `
+    -InfoTitle "Hidden Products" `
+    -Modal -Width 900 -Height 600
+    
+Close-Window
+----field----
+field: {06D5295C-ED2F-4A54-9BF2-26228D113318}
+name: __Icon
+key: __icon
+content-length: 41
+
+activecommerce-icons/32x32/logo-black.png
+----version----
+language: en
+version: 1
+revision: 07a9cdcd-3a31-4abc-9bf9-9f2190141689
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20131203T215804Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+07a9cdcd-3a31-4abc-9bf9-9f2190141689
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 35
+
+20150813T163136:635750802967699099Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin
