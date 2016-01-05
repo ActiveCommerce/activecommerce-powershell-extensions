@@ -10,6 +10,11 @@ If you are not familiar with the SPE module, some good starting points include:
 
 We are open sourcing this module in order to make it available to Active Commerce customers and partners to utilize and extend. With a little PowerShell knowledge, SPE makes it easy to build custom reports and tools that make the day-to-day operations of your commerce site much smoother!
 
+## Installing
+* First, install Sitecore PowerShell Extensions from the Marketplace link above.
+  * The current release has been tested with SPE 3.3 on Sitecore 7.1 and 8.1.
+* Then, install this module's Sitecore package, found under [releases](http://www.github.com/ActiveCommerce/activecommerce-powershell-extensions/releases).
+
 ## Module Contents
 
 ### Order Reports
@@ -115,7 +120,7 @@ When running reports on orders, performance is greatly helped by allowing NHiber
 Utilizing the items in this project currently requires [Team Development for Sitecore](http://www.hhogdev.com/products/team-development-for-sitecore/overview.aspx).
 
 * Install a new Sitecore / Active Commerce instance, following directions in the *Installation Guide.*
-* Install the appropriate Sitecore PowerShell Extensions module for your Sitecore version. Initial development/testing was done with version 3.2 on Sitecore 8.
+* Install the appropriate Sitecore PowerShell Extensions module for your Sitecore version. Initial development/testing was done with version 3.3 on Sitecore 8.
 * Before opening the solution, edit *src/deploy.targets* and specify the path to your Sitecore instance.
 * Before opening the solution, edit *src/TdsGlobal.config* and specify the path and URL of your Sitecore instance.
 * Open the solution and restore Nuget packages (may not be needed if you have Visual Studio configured to restore Nuget packages on build).
