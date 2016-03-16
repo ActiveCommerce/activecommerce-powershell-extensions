@@ -80,6 +80,11 @@
                       <Literal Text="Sales Totals" />
                     </Border>
                   </li>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={79B49239-499F-430E-ACB1-BA3837634E6A},scriptDb=master)">
+                      <Literal Text="Tax Totals" />
+                    </Border>
+                  </li>
                 </ul>
               </Border>
             </Border>
