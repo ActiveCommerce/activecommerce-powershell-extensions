@@ -79,6 +79,9 @@
     <Reference Include="ActiveCommerce.Kernel">
       <HintPath>$(SitecorePath)\bin\ActiveCommerce.Kernel.dll</HintPath>
     </Reference>
+    <Reference Include="ActiveCommerce.ContentSearch">
+      <HintPath>$(SitecorePath)\bin\ActiveCommerce.ContentSearch.dll</HintPath>
+    </Reference>
     <Reference Include="ActiveCommerce.Data">
       <HintPath>$(SitecorePath)\bin\ActiveCommerce.Data.dll</HintPath>
     </Reference>
@@ -88,13 +91,18 @@
     <Reference Include="Sitecore.Ecommerce.Core">
       <HintPath>$(SitecorePath)\bin\Sitecore.Ecommerce.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Sitecore.Ecommerce.DomainModel">
+      <HintPath>$(SitecorePath)\bin\Sitecore.Ecommerce.DomainModel.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Ecommerce.Kernel">
       <HintPath>$(SitecorePath)\bin\Sitecore.Ecommerce.Kernel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cmdlets\GetAcProduct.cs" />
     <Compile Include="Cmdlets\GetAcSites.cs" />
     <Compile Include="Cmdlets\PowershellLinq.cs" />
+    <Compile Include="Cmdlets\GetAcShopSettings.cs" />
     <Compile Include="Cmdlets\ResolveAcObject.cs" />
     <Compile Include="Cmdlets\ShopContextSwitcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

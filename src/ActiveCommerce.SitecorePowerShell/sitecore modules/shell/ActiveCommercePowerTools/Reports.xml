@@ -41,7 +41,7 @@
                     </Border>
                   </li>
                   <li>
-                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={818EA2CA-3F19-4087-AC01-8F5830F39BA4},scriptDb=master)">
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={3AF5A109-6619-4913-A5CC-3935810403B0},scriptDb=master)">
                       <Literal Text="Low Inventory" />
                     </Border>
                   </li>
