@@ -2,8 +2,8 @@
 version: 1
 id: {72DF91C8-9C4B-4766-9F1B-5CDC5A2D9743}
 database: master
-path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Toolbox/Product Stock Database Refresh
-parent: {CD416B3C-A14E-40E7-91E8-6FE00494E991}
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Utility/Product Stock Database Refresh
+parent: {68DC3BBC-A3C2-4416-85EF-113962ABA4EA}
 name: Product Stock Database Refresh
 master: {00000000-0000-0000-0000-000000000000}
 template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
@@ -38,7 +38,7 @@ Show-Result -Text -Title "Refresh Results"
 ----version----
 language: en
 version: 1
-revision: e0eab39b-bea8-4329-9b3b-d60867ac87a7
+revision: f716280a-df78-4a1c-922b-6750849d89ac
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -53,14 +53,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-e0eab39b-bea8-4329-9b3b-d60867ac87a7
+f716280a-df78-4a1c-922b-6750849d89ac
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160316T191725Z
+20160316T223324Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

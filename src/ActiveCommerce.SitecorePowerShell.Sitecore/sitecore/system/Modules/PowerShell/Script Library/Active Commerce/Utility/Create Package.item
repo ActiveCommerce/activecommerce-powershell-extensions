@@ -1,0 +1,108 @@
+----item----
+version: 1
+id: {AA07C19A-56A0-48A8-BEF9-282ACE9024FA}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Utility/Create Package
+parent: {68DC3BBC-A3C2-4416-85EF-113962ABA4EA}
+name: Create Package
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 2202
+
+$package = New-Package 'Active Commerce PowerTools'
+$package.Metadata.Author = ''
+$package.Metadata.Version = '2.0'
+$package.Metadata.Revision = ''
+$package.Metadata.License = ''
+$package.Metadata.Comment = ''
+$package.Metadata.Readme = ''
+$package.Metadata.Publisher = 'Active Commerce'
+$package.Metadata.Attributes = ''
+$package.Metadata.PostStep = ''
+
+#
+# Script Library
+#
+$source = Get-Item 'master:\sitecore\system\Modules\PowerShell\Script Library\Active Commerce' | New-ItemSource -Name 'Script Library' -InstallMode Merge -MergeMode Merge
+$package.Sources.Add($source)
+
+#
+# PowerTools Launchpad and Application
+#
+$source = Get-Item 'core:\sitecore\client\Applications\Launchpad\PageSettings\Buttons\Marketing\Active Commerce PowerTools' | New-ItemSource -Name 'Launchpad Button' -InstallMode Merge -MergeMode Merge
+$package.Sources.Add($source)
+$source = Get-Item 'core:\sitecore\content\Applications\ActiveCommerce' | New-ItemSource -Name 'Launchpad Application' -InstallMode Merge -MergeMode Merge
+$package.Sources.Add($source)
+$source = Get-Item 'core:\sitecore\layout\Layouts\Applications\Active Commerce Reports' | New-ItemSource -Name 'Launchpad Application Layout' -InstallMode Merge -MergeMode Merge
+$package.Sources.Add($source)
+
+#
+# Binaries
+#
+$xitems = @(
+	"$AppPath\bin\ActiveCommerce.SitecorePowerShell.dll",
+	"$AppPath\bin\System.Linq.Dynamic.dll"
+)
+$source = $xitems | Get-Item | New-ExplicitFileSource -Name 'Binaries' -InstallMode Overwrite
+$package.Sources.Add($source)
+
+#
+# Config
+#
+$xitems = @(
+	"$AppPath\App_Config\Include\xActiveCommerce.PowerTools.config"
+)
+$source = $xitems | Get-Item | New-ExplicitFileSource -Name 'Config' -InstallMode Overwrite
+$package.Sources.Add($source)
+
+#
+# Sitecore UX
+#
+$xitems = @(
+    "$AppPath\sitecore modules\shell\ActiveCommercePowerTools\Reports.xml",
+	"$AppPath\sitecore modules\shell\ActiveCommercePowerTools\Reports.css"
+)
+$source = $xitems | Get-Item | New-ExplicitFileSource -Name 'Sitecore UX' -InstallMode Overwrite
+$package.Sources.Add($source)
+
+$packageName = "$($package.Name)-$($package.Metadata.Version).zip"
+Export-Package -Project $package -Path $packageName -Zip
+----version----
+language: en
+version: 1
+revision: 2094d6cf-af5a-4438-aa63-83089b52dce7
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20160316T222637Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+2094d6cf-af5a-4438-aa63-83089b52dce7
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 16
+
+20160316T223317Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

@@ -115,7 +115,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Config\Include\xActiveCommerce.SitecorePowerShell.config" />
+    <Content Include="App_Config\Include\xActiveCommerce.PowerTools.config" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
