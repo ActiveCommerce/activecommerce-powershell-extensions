@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<control>
+  <ActiveCommerceReports>
+    <FormPage>
+      <Stylesheet src="/sitecore/shell/client/Speak/Assets/css/speak-default-theme.css" />
+      <Stylesheet src="/sitecore/shell/client/Applications/ControlPanel/ControlPanel.css" />
+      <Stylesheet src="/sitecore modules/shell/ActiveCommercePowerTools/Reports.css" />
+      
+      <!--
+      <CodeBeside Type="My.XmlPlaygroundForm,XmlPlayground.dll"/>
+      -->
+      
+      <Border Width="100%" Class="sc" runat="server">
+        
+        <Border Class="sc-applicationHeader">
+          <Border Class="sc-applicationHeader-row1">
+            <Border Class="sc-applicationHeader-content">
+              <Literal Class="sc-applicationHeader-title" Text="Active Commerce PowerTools" />
+            </Border>
+          </Border>
+          <Border Class="sc-applicationHeader-row2">
+            <button Class="btn sc-backbutton" onclick="window.location='/sitecore/client/Applications/Launchpad'; return false;">
+              <Literal Class="sc-backbutton-text" Text="Back" />
+            </button>
+          </Border>
+        </Border>
+        <Border Class="sc-applicationContent-main">
+          <Border Class="col-md-4">
+            <Border Class="sc-controlpanel-box">
+             <Border Class="sc-controlpanel-box-header">
+                <h4>
+                  <ThemedImage src="Office/32x32/shopping_cart_full.png" width="24" height="24" class="" alt="" border="0" />
+                  Products
+                </h4>
+              </Border>
+              <Border Class="sc-controlpanel-box-content">
+                <ul>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={B983FBF5-02EF-4B27-AA81-FA6057CD0BB2},scriptDb=master)">
+                      <Literal Text="Product Sales" />
+                    </Border>
+                  </li>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={818EA2CA-3F19-4087-AC01-8F5830F39BA4},scriptDb=master)">
+                      <Literal Text="Low Inventory" />
+                    </Border>
+                  </li>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={5B883A43-7114-4CFE-9B6F-08919C49B68D},scriptDb=master)">
+                      <Literal Text="Product Export" />
+                    </Border>
+                  </li>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={5D730A46-B54B-4DFB-87EE-8F8BA402B3AA},scriptDb=master)">
+                      <Literal Text="Product Import" />
+                    </Border>
+                  </li>
+                </ul>
+              </Border>
+            </Border>
+          </Border>
+         
+          <Border Class="col-md-4">
+            <Border Class="sc-controlpanel-box">
+             <Border Class="sc-controlpanel-box-header">
+                <h4>
+                  <ThemedImage src="Office/32x32/moneybag_dollar.png" width="24" height="24" class="" alt="" border="0" />
+                  Orders
+                </h4>
+              </Border>
+              <Border Class="sc-controlpanel-box-content">
+                <ul>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={FB630178-A007-4AEE-A696-3FC9C31E6AF9},scriptDb=master)">
+                      <Literal Text="All Orders" />
+                    </Border>
+                  </li>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={818EA2CA-3F19-4087-AC01-8F5830F39BA4},scriptDb=master)">
+                      <Literal Text="Sales Totals" />
+                    </Border>
+                  </li>
+                </ul>
+              </Border>
+            </Border>
+          </Border>
+          <Border Class="col-md-4">
+            <Border Class="sc-controlpanel-box">
+             <Border Class="sc-controlpanel-box-header">
+                <h4>
+                  <ThemedImage src="Office/32x32/money_bill_cut.png" width="24" height="24" class="" alt="" border="0" />
+                  Promotions
+                </h4>
+              </Border>
+              <Border Class="sc-controlpanel-box-content">
+                <ul>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={818EA2CA-3F19-4087-AC01-8F5830F39BA4},scriptDb=master)">
+                      <Literal Text="Discount Usage" />
+                    </Border>
+                  </li>
+                </ul>
+              </Border>
+            </Border>
+          </Border>
+        </Border> 
+          <!--<Border Click="item:executescript(script={818EA2CA-3F19-4087-AC01-8F5830F39BA4},scriptDb=master)">
+                      Hello World
+                    </Border>
+                    -->
+      </Border>
+    </FormPage>
+  </ActiveCommerceReports>
+</control>

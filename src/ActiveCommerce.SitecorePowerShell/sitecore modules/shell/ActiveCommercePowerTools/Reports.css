@@ -1,0 +1,17 @@
+﻿
+
+.sc-applicationHeader {
+    padding-top: 0;
+}
+
+.sc-applicationHeader-row1:after {
+    top: 0;
+}
+
+.sc-applicationHeader-content {
+    max-width: none;
+}
+
+.report-link {
+    cursor: pointer;
+}
