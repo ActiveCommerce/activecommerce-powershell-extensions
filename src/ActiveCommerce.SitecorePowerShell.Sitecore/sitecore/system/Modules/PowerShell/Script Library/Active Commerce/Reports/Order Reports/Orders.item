@@ -13,10 +13,10 @@ templatekey: PowerShell Script
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2569
+content-length: 2570
 
 $result = Read-Variable -Parameters `
-    @{ Name="ShopContext"; Title="Shop Name"; Value="sherpa_winter_outfitters" },
+    @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
     @{ Name="Info"; Title="Customer Name"; Editor="info"; },
     @{ Name="FirstName"; Title=""; Tooltip="First"; Columns=6 },
     @{ Name="LastName"; Title=""; Tooltip="Last"; Columns=6 },
@@ -69,7 +69,7 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
 ----version----
 language: en
 version: 1
-revision: cb0225fa-9038-4f4f-9341-c847557dbf2c
+revision: eb19a846-db4f-4242-af5c-cde26b579dd4
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -84,14 +84,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-cb0225fa-9038-4f4f-9341-c847557dbf2c
+eb19a846-db4f-4242-af5c-cde26b579dd4
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
-content-length: 35
+content-length: 16
 
-20150813T020549:635750283498350000Z
+20160316T163135Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
