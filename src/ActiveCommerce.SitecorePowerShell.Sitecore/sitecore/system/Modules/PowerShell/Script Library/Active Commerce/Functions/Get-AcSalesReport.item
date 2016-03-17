@@ -1,0 +1,106 @@
+----item----
+version: 1
+id: {1B00DC88-D2A1-4D6E-ABB2-D3447A58183B}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Functions/Get-AcSalesReport
+parent: {6CC36C8A-47F4-46E2-8FDE-C1CE25CEAF5D}
+name: Get-AcSalesReport
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 2498
+
+#$groupOptions = [ordered]@{Day = 1; "Month And Year" = 3; Year = 4; "Day of Week" = 2; "Month of Year" = 5}
+
+Function Get-AcSalesReport($ShopContext, $FromDate, $ToDate, $GroupBy) {
+    $orders = Switch-AcShopContext -Site $ShopContext -ScriptBlock {
+        $orderManager = Resolve-AcObject ActiveCommerce.Orders.Management.IOrderManager``1[ActiveCommerce.Orders.Order]
+        $orders = new-query $orderManager.GetOrders() | defer-query
+        if ($FromDate)
+        {
+            $orders = $orders | where-linqobject "IssueDate >= DateTime($($FromDate.Year), $($FromDate.Month), $($FromDate.Day))" | defer-query
+        }
+        if ($ToDate)
+        {
+            $orders = $orders | where-linqobject "IssueDate <= DateTime($($ToDate.Year), $($ToDate.Month), $($ToDate.Day) + 1)" | defer-query
+        }
+        #anonymous object group by w/ System.Linq.Dynamic not compatible w/ NHibernate, so we'll do further grouping in PowerShell
+        $orders = $orders | group-linqobject -KeySelector "IssueDate.Date" -ElementSelector "it" | defer-query
+        $orders = $orders | select-linqobject "new (Key as Date, it.Count() as OrderCount, Sum(it.AnticipatedMonetaryTotal.TaxInclusiveAmount.Value) as Sales)"
+        
+        switch ($GroupBy)
+        {
+            1 {
+                $orders = $orders | Group-Object { $_.Date.ToString("yyyy-MM-dd") }
+            }
+            2 {
+                $orders = $orders | Group-Object { $_.Date.DayOfWeek }
+            }
+            3 {
+                $orders = $orders | Group-Object { $_.Date.ToString("yyyy-MM") }
+            }
+            4 {
+                $orders = $orders | Group-Object { $_.Date.Year }
+            }
+            5 {
+                $orders = $orders | Group-Object { $_.Date.ToString("MMM") }
+            }
+        }
+    
+        $orders = $orders | %{
+            New-Object psobject -Property @{
+                Date = $_.Name
+                OrderCount = ($_.Group | Measure-Object OrderCount -Sum).Sum
+                Sales = ($_.Group | Measure-Object Sales -Sum).Sum
+            }
+        } | Select Date, OrderCount, Sales
+        return $orders
+    }
+    return $orders
+}
+
+#$ShopContext = "sherpa_winter_outfitters"
+#$FromDate = [System.DateTime]::Now.AddDays(-7)
+#$ToDate = [System.DateTime]::Now
+#$GroupBy = 1
+
+#$orders = Get-AcSalesReport -ShopContext $ShopContext -FromDate $FromDate -ToDate $ToDate -GroupBy $GroupBy
+#Write-Host ($orders | out-string)
+----version----
+language: en
+version: 1
+revision: ae6c4abb-844b-444e-b3a3-c48428aae868
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20160317T165609Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+ae6c4abb-844b-444e-b3a3-c48428aae868
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 16
+
+20160317T172633Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin
