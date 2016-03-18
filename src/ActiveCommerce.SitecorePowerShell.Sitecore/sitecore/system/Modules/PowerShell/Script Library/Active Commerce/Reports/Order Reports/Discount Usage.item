@@ -13,7 +13,7 @@ templatekey: PowerShell Script
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2171
+content-length: 2170
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
@@ -58,13 +58,13 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
     $totals | Show-ListView @props -Property `
         @{Label="Discount Code"; Expression={$_.Code}},
         @{Label="Orders using discount"; Expression={$_.Count}},
-        @{Label="Orders payment total"; Expression={$_.Total.ToString("0.00")}}
+        @{Label="Orders payment total"; Expression={$_.Total.ToString("N02")}}
 }
 
 ----version----
 language: en
 version: 1
-revision: e1bb61bb-bc13-4331-8b5c-d6949ab8401e
+revision: 82d4fc31-6ad3-48fe-9ac7-c5da5175960b
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -79,14 +79,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-e1bb61bb-bc13-4331-8b5c-d6949ab8401e
+82d4fc31-6ad3-48fe-9ac7-c5da5175960b
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160318T154825Z
+20160318T214109Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

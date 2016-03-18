@@ -13,7 +13,7 @@ templatekey: PowerShell Script
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2089
+content-length: 2088
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
@@ -57,13 +57,13 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
         @{Label="Code"; Expression={$_.Code}},
         @{Label="Name"; Expression={$_.Name}},
         @{Label="Quantity Sold"; Expression={$_.QuantitySold}},
-        @{Label="Total Revenue"; Expression={$_.TotalRevenue.ToString("0.00")}}
+        @{Label="Total Revenue"; Expression={$_.TotalRevenue.ToString("N02")}}
 }
 
 ----version----
 language: en
 version: 1
-revision: 73f47eb2-d5a1-43da-b875-189aebbfa3e5
+revision: dd47b9e0-362d-4d1e-bc4c-4ce3903fff39
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -78,14 +78,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-73f47eb2-d5a1-43da-b875-189aebbfa3e5
+dd47b9e0-362d-4d1e-bc4c-4ce3903fff39
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
-content-length: 35
+content-length: 16
 
-20150813T021112:635750286723100000Z
+20160318T214138Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

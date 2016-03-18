@@ -13,7 +13,7 @@ templatekey: PowerShell Script
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2451
+content-length: 2448
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
@@ -61,15 +61,15 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
     $totals | Show-ListView @props -Property `
         @{Label="Shipping Method"; Expression={$_.Code}},
         @{Label="Orders using method"; Expression={$_.Count}},
-        @{Label="Orders total"; Expression={$_.Total.ToString("0.00")}},
-        @{Label="Orders shipping total"; Expression={$_.MethodCost.ToString("0.00")}},
-        @{Label="Average shipping per order"; Expression={($_.MethodCost / $_.Count).ToString("0.00")}}
+        @{Label="Orders total"; Expression={$_.Total.ToString("N02")}},
+        @{Label="Orders shipping total"; Expression={$_.MethodCost.ToString("N02")}},
+        @{Label="Average shipping per order"; Expression={($_.MethodCost / $_.Count).ToString("N02")}}
 }
 
 ----version----
 language: en
 version: 1
-revision: 6b621af7-ea55-4a78-9cb7-d2d45129615a
+revision: c51a93d0-985b-446c-a696-5afe4cb543f9
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -84,14 +84,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-6b621af7-ea55-4a78-9cb7-d2d45129615a
+c51a93d0-985b-446c-a696-5afe4cb543f9
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160318T195930Z
+20160318T214203Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
