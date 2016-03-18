@@ -105,7 +105,7 @@
               <Border Class="sc-controlpanel-box-content">
                 <ul>
                   <li>
-                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={4537ED59-F48A-4F42-A5D2-450F8B246399}{818EA2CA-3F19-4087-AC01-8F5830F39BA4},scriptDb=master)">
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={4537ED59-F48A-4F42-A5D2-450F8B246399},scriptDb=master)">
                       <Literal Text="Discount Usage" />
                     </Border>
                   </li>
