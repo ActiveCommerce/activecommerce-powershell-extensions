@@ -13,9 +13,7 @@ templatekey: PowerShell Script
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2562
-
-$groupOptions = [ordered]@{Day = 1; "Month And Year" = 3; Year = 4; "Day of Week" = 2; "Month of Year" = 5}
+content-length: 2451
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
@@ -71,7 +69,7 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
 ----version----
 language: en
 version: 1
-revision: 3cae229f-f839-4868-b317-097fc587a96b
+revision: 6b621af7-ea55-4a78-9cb7-d2d45129615a
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -86,14 +84,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-3cae229f-f839-4868-b317-097fc587a96b
+6b621af7-ea55-4a78-9cb7-d2d45129615a
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160318T195412Z
+20160318T195930Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
