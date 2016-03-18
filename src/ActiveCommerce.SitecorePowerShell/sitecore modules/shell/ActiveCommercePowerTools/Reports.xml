@@ -85,6 +85,11 @@
                       <Literal Text="Tax Totals" />
                     </Border>
                   </li>
+                  <li>
+                    <Border Style="display:inline;" Class="report-link" Click="item:executescript(script={F2F61CB1-B485-4F21-8F49-5BFBB8F55F0B},scriptDb=master)">
+                      <Literal Text="Shipping Methods" />
+                    </Border>
+                  </li>
                 </ul>
               </Border>
             </Border>

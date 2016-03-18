@@ -130,6 +130,7 @@
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Discount Usage.item">
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
+      <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Orders.item">
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
@@ -141,6 +142,9 @@
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Sales Totals.item">
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
+      <ItemDeployment>AlwaysUpdate</ItemDeployment>
+    </SitecoreItem>
+    <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Shipping Methods.item">
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Tax Totals.item">
