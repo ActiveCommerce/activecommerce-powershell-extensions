@@ -47,7 +47,7 @@ Included reports are:
 
 Limited product export/import functionality is also available in the module. These tools allow you to output product data to CSV, makes changes or add new products, and import the data back into your product repository. These tools can be accessed via the Sitecore Desktop, Start > PowerShell Toolbox > Porduct Export/Import.
 
-You can use the tool of your choice for editing the CSV, though Google Sheets seem to work very well for bringing in and re-exporting CSV. The tool must support editing UTF-8. Excel on Mac does not support UTF-8 CSV files.
+You can use the tool of your choice for editing the CSV, though Google Sheets seem to work very well for bringing in and re-exporting CSV.
 
 Supported import/export abilities:
 
