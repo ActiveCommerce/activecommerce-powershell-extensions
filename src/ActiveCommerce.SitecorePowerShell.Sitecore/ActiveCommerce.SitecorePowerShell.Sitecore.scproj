@@ -104,6 +104,10 @@
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
+    <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Functions\Get-FileEncoding.item">
+      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
+      <ItemDeployment>AlwaysUpdate</ItemDeployment>
+    </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Functions\Send-AcSalesReport.item">
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
@@ -146,6 +150,7 @@
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Shipping Methods.item">
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
+      <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Modules\PowerShell\Script Library\Active Commerce\Reports\Order Reports\Tax Totals.item">
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
