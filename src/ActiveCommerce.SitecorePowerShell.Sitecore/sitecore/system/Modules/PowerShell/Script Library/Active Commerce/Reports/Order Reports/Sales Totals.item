@@ -13,7 +13,9 @@ templatekey: PowerShell Script
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2833
+content-length: 1152
+
+Import-Function -Name Get-AcSalesReport
 
 $groupOptions = [ordered]@{Day = 1; "Month And Year" = 3; Year = 4; "Day of Week" = 2; "Month of Year" = 5}
 
@@ -29,62 +31,21 @@ if($result -ne "ok")
     Exit
 }
 
-Switch-AcShopContext -Site $ShopContext -ScriptBlock {
-    $orderManager = Resolve-AcObject ActiveCommerce.Orders.Management.IOrderManager``1[ActiveCommerce.Orders.Order]
-    $orders = new-query $orderManager.GetOrders() | defer-query
-    if ($FromDate)
-    {
-        $orders = $orders | where-linqobject "IssueDate >= DateTime($($FromDate.Year), $($FromDate.Month), $($FromDate.Day))" | defer-query
-    }
-    if ($ToDate)
-    {
-        $orders = $orders | where-linqobject "IssueDate <= DateTime($($ToDate.Year), $($ToDate.Month), $($ToDate.Day) + 1)" | defer-query
-    }
-    #anonymous object group by w/ System.Linq.Dynamic not compatible w/ NHibernate, so we'll do further grouping in PowerShell
-    $orders = $orders | group-linqobject -KeySelector "IssueDate.Date" -ElementSelector "it" | defer-query
-    $orders = $orders | select-linqobject "new (Key as Date, it.Count() as OrderCount, Sum(it.AnticipatedMonetaryTotal.TaxInclusiveAmount.Value) as Sales)"
-    
-    switch ($GroupBy)
-    {
-        1 {
-            $orders = $orders | Group-Object { $_.Date.ToString("yyyy-MM-dd") }
-        }
-        2 {
-            $orders = $orders | Group-Object { $_.Date.DayOfWeek }
-        }
-        3 {
-            $orders = $orders | Group-Object { $_.Date.ToString("yyyy-MM") }
-        }
-        4 {
-            $orders = $orders | Group-Object { $_.Date.Year }
-        }
-        5 {
-            $orders = $orders | Group-Object { $_.Date.ToString("MMM") }
-        }
-    }
+$orders = Get-AcSalesReport -ShopContext $ShopContext -FromDate $FromDate -ToDate $ToDate -GroupBy $GroupBy
 
-    $orders = $orders | %{
-        New-Object psobject -Property @{
-            Date = $_.Name
-            OrderCount = ($_.Group | Measure-Object OrderCount -Sum).Sum
-            Sales = ($_.Group | Measure-Object Sales -Sum).Sum
-        }
-    } | Select Date, OrderCount, Sales
-    
-    $props = @{
-        InfoTitle = "Sales Totals"
-        PageSize = 100
-    }
-    $orders | Show-ListView @props -Property `
-        @{Label="Period"; Expression={$_.Date}},
-        @{Label="Orders"; Expression={$_.OrderCount}},
-        @{Label="Total Sales"; Expression={$_.Sales.ToString("0.00")}}
+$props = @{
+    InfoTitle = "Sales Totals"
+    PageSize = 100
 }
+$orders | Show-ListView @props -Property `
+    @{Label="Period"; Expression={$_.Date}},
+    @{Label="Orders"; Expression={$_.OrderCount}},
+    @{Label="Total Sales"; Expression={$_.Sales.ToString("N02")}}
 
 ----version----
 language: en
 version: 1
-revision: 58665a63-e5ab-4d78-85c5-a6c479cb9038
+revision: 750097f3-84d4-45f0-84dd-4a56cc7f730b
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -99,14 +60,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-58665a63-e5ab-4d78-85c5-a6c479cb9038
+750097f3-84d4-45f0-84dd-4a56cc7f730b
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
-content-length: 35
+content-length: 16
 
-20150813T021129:635750286892930000Z
+20160318T214147Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

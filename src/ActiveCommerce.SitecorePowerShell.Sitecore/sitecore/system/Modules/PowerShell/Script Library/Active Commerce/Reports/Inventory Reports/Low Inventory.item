@@ -1,0 +1,100 @@
+----item----
+version: 1
+id: {3AF5A109-6619-4913-A5CC-3935810403B0}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Reports/Inventory Reports/Low Inventory
+parent: {6D0B598D-AF47-4A7F-A756-F6CE21A36CC6}
+name: Low Inventory
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 2151
+
+$result = Read-Variable -Parameters `
+    @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
+    @{ Name="Threshold"; Title="Stock Threshold"; Value="5"; Columns=2 } `
+    -Title "Low Inventory Report Parameters" -Width 650 -Height 660 -OkButtonName "Run Report" -CancelButtonName "Abort" -ShowHints
+
+if($result -ne "ok")
+{
+    Exit
+}
+
+Switch-AcShopContext -Site $ShopContext -ScriptBlock {
+    $settings = Get-AcShopBusinessSettings
+    $repositoryId = $settings.ProductsLink
+    if ($repositoryId -eq $null) {
+        Show-Alert "Selected shop is missing Products Link. Please verify your Business Settings."
+        Close-Window
+        Exit
+    }
+    $stockRepository = Resolve-AcObject ActiveCommerce.Products.Stock.IProductStockRepository``1[ActiveCommerce.Products.Stock.ProductStock]
+    $stockManager = Resolve-AcObject ActiveCommerce.Products.Stock.IProductStockManager
+    $stock = new-query $stockRepository.GetAll() | Defer-Query
+    $stock = $stock | Where-LinqObject ('RepositoryId == Guid.Parse("' + $repositoryId + '")') | Defer-Query
+    $stock = $stock | Where-LinqObject "Stock < $Threshold" | Execute-Query
+    
+    $stock = $stock | %{
+        $product = Get-AcProduct $_.Code
+        New-Object psobject -Property @{
+            Code = $_.Code
+            Name = $product.Name
+            Stock = $_.Stock
+            AlwaysInStock = $product.AlwaysInStock
+            AllowPurchaseWhenOutOfStock = $product.AllowPurchaseWhenOutOfStock
+            Hidden = $product.Hidden
+        }
+    }
+    
+    # filter out those marked "Always in Stock"
+    $stock = $stock | Where-Object { !$_.AlwaysInStock }
+    
+    $props = @{
+        InfoTitle = "Low Stock Levels"
+        PageSize = 100
+    }
+    $stock | Show-ListView @props -Property `
+        @{Label="Product Code"; Expression={$_.Code}},
+        @{Label="Name"; Expression={$_.Name}},
+        @{Label="Stock Level"; Expression={$_.Stock}},
+        @{Label="Allow Purchase when Out of Stock"; Expression={$_.AllowPurchaseWhenOutOfStock}},
+        @{Label="Product is Hidden"; Expression={$_.Hidden}}
+}
+----version----
+language: en
+version: 1
+revision: 7fc76080-05ec-496d-8aa0-3226341d931c
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20160316T162036Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+7fc76080-05ec-496d-8aa0-3226341d931c
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 16
+
+20160316T194944Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

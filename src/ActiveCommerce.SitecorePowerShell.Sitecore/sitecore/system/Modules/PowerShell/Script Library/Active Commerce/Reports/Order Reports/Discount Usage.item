@@ -1,0 +1,96 @@
+----item----
+version: 1
+id: {4537ED59-F48A-4F42-A5D2-450F8B246399}
+database: master
+path: /sitecore/system/Modules/PowerShell/Script Library/Active Commerce/Reports/Order Reports/Discount Usage
+parent: {04039C3A-131D-46AC-97FD-283B823BFE73}
+name: Discount Usage
+master: {00000000-0000-0000-0000-000000000000}
+template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
+templatekey: PowerShell Script
+
+----field----
+field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
+name: Script
+key: script
+content-length: 2170
+
+$result = Read-Variable -Parameters `
+    @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
+    @{ Name="FromDate"; Title=""; Tooltip="From"; Columns=3; Editor="date"; Value=[System.DateTime]::Now.AddDays(-7) },
+    @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=9; Editor="date"; Value=[System.DateTime]::Now } `
+    -Title "Order Report Parameters" -Width 650 -Height 660 -OkButtonName "Run Report" -CancelButtonName "Abort" -ShowHints
+
+if($result -ne "ok")
+{
+    Exit
+}
+
+Switch-AcShopContext -Site $ShopContext -ScriptBlock {
+    $orderManager = Resolve-AcObject ActiveCommerce.Orders.Management.IOrderManager``1[ActiveCommerce.Orders.Order]
+    $ordersWithDiscounts = new-query $orderManager.GetOrders() | where-linqobject 'AllowanceCharge.Any(!ChargeIndicator)' | defer-query
+    
+    if ($FromDate)
+    {
+        $ordersWithDiscounts = $ordersWithDiscounts | where-linqobject "IssueDate >= DateTime($($FromDate.Year), $($FromDate.Month), $($FromDate.Day))" | defer-query
+    }
+    if ($ToDate)
+    {
+        $ordersWithDiscounts = $ordersWithDiscounts | where-linqobject "IssueDate <= DateTime($($ToDate.Year), $($ToDate.Month), $($ToDate.Day) + 1)" | defer-query
+    }
+
+    $codes = $ordersWithDiscounts | execute-query | % {$_.AllowanceCharge} | ? { -not $_.ChargeIndicator } | % {$_.ID} | Sort-Object | Get-Unique
+    
+    $totals = $codes | % {
+        $code = $_
+        $codeOrders = $ordersWithDiscounts | where-linqobject "AllowanceCharge.Any(ID == ""$code"")" | execute-query
+        New-Object PSObject -Property @{
+            Code = $code
+            Count = ($codeOrders | Measure-Object).Count
+            Total = ($codeOrders | % { $_.AnticipatedMonetaryTotal.get_TaxInclusiveAmount().Value } | Measure-Object -Sum).Sum
+        }
+    }
+    
+    $props = @{
+        InfoTitle = "Discount Usage"
+        PageSize = 100
+    }
+    $totals | Show-ListView @props -Property `
+        @{Label="Discount Code"; Expression={$_.Code}},
+        @{Label="Orders using discount"; Expression={$_.Count}},
+        @{Label="Orders payment total"; Expression={$_.Total.ToString("N02")}}
+}
+
+----version----
+language: en
+version: 1
+revision: 82d4fc31-6ad3-48fe-9ac7-c5da5175960b
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 16
+
+20160316T150515Z
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+82d4fc31-6ad3-48fe-9ac7-c5da5175960b
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 16
+
+20160318T214109Z
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

@@ -16,7 +16,7 @@ key: script
 content-length: 2569
 
 $result = Read-Variable -Parameters `
-    @{ Name="ShopContext"; Title="Shop Name"; Value="sherpa_winter_outfitters" },
+    @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
     @{ Name="Info"; Title="Customer Name"; Editor="info"; },
     @{ Name="FirstName"; Title=""; Tooltip="First"; Columns=6 },
     @{ Name="LastName"; Title=""; Tooltip="Last"; Columns=6 },
@@ -63,13 +63,13 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
         @{Label="First Name"; Expression={$_.BuyerCustomerParty.Party.Person.FirstName}},
         @{Label="Last Name"; Expression={$_.BuyerCustomerParty.Party.Person.FamilyName}},
         @{Label="Items"; Expression={($_.OrderLines | % {$_.LineItem.Quantity} | Measure-Object -Sum).Sum}},
-        @{Label="Total"; Expression={$_.AnticipatedMonetaryTotal.TaxInclusiveAmount.Value.ToString("0.00")}}
+        @{Label="Total"; Expression={$_.AnticipatedMonetaryTotal.TaxInclusiveAmount.Value.ToString("N02")}}
 }
 
 ----version----
 language: en
 version: 1
-revision: cb0225fa-9038-4f4f-9341-c847557dbf2c
+revision: 5c2eaef8-dccc-4fc9-ad56-950ebf9af1aa
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -84,14 +84,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-cb0225fa-9038-4f4f-9341-c847557dbf2c
+5c2eaef8-dccc-4fc9-ad56-950ebf9af1aa
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
-content-length: 35
+content-length: 16
 
-20150813T020549:635750283498350000Z
+20160318T214125Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
