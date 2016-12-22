@@ -8,21 +8,24 @@ name: Sales Totals
 master: {00000000-0000-0000-0000-000000000000}
 template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
 templatekey: PowerShell Script
+created: 20161222T224306:636180433860930000
 
 ----field----
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 1152
+content-length: 1509
 
 Import-Function -Name Get-AcSalesReport
 
+$orderStateOptions = [ordered]@{New = "New"; Open = "Open"; Processing = "Processing"; Complete = "Complete"; Cancelled = "Cancelled"; Failed = "Failed"}
 $groupOptions = [ordered]@{Day = 1; "Month And Year" = 3; Year = 4; "Day of Week" = 2; "Month of Year" = 5}
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
     @{ Name="FromDate"; Title=""; Tooltip="From"; Columns=3; Editor="date"; Value=[System.DateTime]::Now.AddDays(-7) },
     @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=9; Editor="date"; Value=[System.DateTime]::Now },
+    @{ Name="OrderStates"; Title="Order States"; Columns=12; Editor="checklist"; Options=$orderStateOptions; Value=@("Open", "Processing", "Complete") },
     @{ Name="GroupBy"; Title="Group By"; Columns=4; Options=$groupOptions; Value="Month" } `
     -Title "Order Report Parameters" -Width 650 -Height 660 -OkButtonName "Run Report" -CancelButtonName "Abort" -ShowHints
 
@@ -31,21 +34,22 @@ if($result -ne "ok")
     Exit
 }
 
-$orders = Get-AcSalesReport -ShopContext $ShopContext -FromDate $FromDate -ToDate $ToDate -GroupBy $GroupBy
+$orders = Get-AcSalesReport -ShopContext $ShopContext -FromDate $FromDate -ToDate $ToDate -OrderStates $OrderStates -GroupBy $GroupBy
 
 $props = @{
     InfoTitle = "Sales Totals"
     PageSize = 100
 }
-$orders | Show-ListView @props -Property `
+$orders | Show-ListView @props -Modal -Property `
     @{Label="Period"; Expression={$_.Date}},
     @{Label="Orders"; Expression={$_.OrderCount}},
     @{Label="Total Sales"; Expression={$_.Sales.ToString("N02")}}
+Close-Window
 
 ----version----
 language: en
 version: 1
-revision: 750097f3-84d4-45f0-84dd-4a56cc7f730b
+revision: dbeb951d-896d-4d84-9095-aa574b76ff4d
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -60,14 +64,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-750097f3-84d4-45f0-84dd-4a56cc7f730b
+dbeb951d-896d-4d84-9095-aa574b76ff4d
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160318T214147Z
+20161222T221348Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

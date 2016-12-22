@@ -8,17 +8,21 @@ name: Shipping Methods
 master: {00000000-0000-0000-0000-000000000000}
 template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
 templatekey: PowerShell Script
+created: 20161222T224306:636180433861330000
 
 ----field----
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2448
+content-length: 3112
+
+$orderStateOptions = [ordered]@{New = "New"; Open = "Open"; Processing = "Processing"; Complete = "Complete"; Cancelled = "Cancelled"; Failed = "Failed"}
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
     @{ Name="FromDate"; Title=""; Tooltip="From"; Columns=3; Editor="date"; Value=[System.DateTime]::Now.AddDays(-7) },
-    @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=9; Editor="date"; Value=[System.DateTime]::Now } `
+    @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=9; Editor="date"; Value=[System.DateTime]::Now },
+    @{ Name="OrderStates"; Title="Order States"; Columns=12; Editor="checklist"; Options=$orderStateOptions; Value=@("Open", "Processing", "Complete") } `
     -Title "Shipping Methods Report Parameters" -Width 650 -Height 660 -OkButtonName "Run Report" -CancelButtonName "Abort" -ShowHints
 
 if($result -ne "ok")
@@ -37,6 +41,15 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
     if ($ToDate)
     {
         $orders = $orders | where-linqobject "IssueDate <= DateTime($($ToDate.Year), $($ToDate.Month), $($ToDate.Day) + 1)" | defer-query
+    }
+    if ($OrderStates)
+    {
+        $stateQuery = ""
+        foreach ($state in $OrderStates) {
+            $stateQuery = $stateQuery + "State.Code = ""$state"" or "
+        }
+        $stateQuery = $stateQuery.Remove($stateQuery.Length - 4)
+        $orders = $orders | where-linqobject $stateQuery | defer-query
     }
 
     $orders = $orders | execute-query
@@ -58,18 +71,19 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
         InfoTitle = "Shipping Method Usage"
         PageSize = 100
     }
-    $totals | Show-ListView @props -Property `
+    $totals | Show-ListView @props -Modal -Property `
         @{Label="Shipping Method"; Expression={$_.Code}},
         @{Label="Orders using method"; Expression={$_.Count}},
         @{Label="Orders total"; Expression={$_.Total.ToString("N02")}},
         @{Label="Orders shipping total"; Expression={$_.MethodCost.ToString("N02")}},
         @{Label="Average shipping per order"; Expression={($_.MethodCost / $_.Count).ToString("N02")}}
+    Close-Window
 }
 
 ----version----
 language: en
 version: 1
-revision: c51a93d0-985b-446c-a696-5afe4cb543f9
+revision: 6e540259-35e5-45c6-8f2c-e1d7d25f1f55
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -84,14 +98,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-c51a93d0-985b-446c-a696-5afe4cb543f9
+6e540259-35e5-45c6-8f2c-e1d7d25f1f55
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160318T214203Z
+20161222T221654Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

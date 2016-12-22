@@ -8,17 +8,21 @@ name: Tax Totals
 master: {00000000-0000-0000-0000-000000000000}
 template: {DD22F1B3-BD87-4DB2-9E7D-F7A496888D43}
 templatekey: PowerShell Script
+created: 20161222T224306:636180433861770000
 
 ----field----
 field: {B1A94FF0-6897-47C0-9C51-AA6ACB80B1F0}
 name: Script
 key: script
-content-length: 2069
+content-length: 2739
+
+$orderStateOptions = [ordered]@{New = "New"; Open = "Open"; Processing = "Processing"; Complete = "Complete"; Cancelled = "Cancelled"; Failed = "Failed"}
 
 $result = Read-Variable -Parameters `
     @{ Name="ShopContext"; Title="Shop Name"; Options=(Get-AcSites -Dictionary) },
     @{ Name="FromDate"; Title=""; Tooltip="From"; Columns=3; Editor="date"; Value=[System.DateTime]::Now.AddDays(-7) },
-    @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=9; Editor="date"; Value=[System.DateTime]::Now } `
+    @{ Name="ToDate"; Title=""; Tooltip="To"; Columns=9; Editor="date"; Value=[System.DateTime]::Now },
+    @{ Name="OrderStates"; Title="Order States"; Columns=12; Editor="checklist"; Options=$orderStateOptions; Value=@("Open", "Processing", "Complete") } `
     -Title "Tax Report Parameters" -Width 650 -Height 300 -OkButtonName "Run Report" -CancelButtonName "Abort" -ShowHints
 
 if($result -ne "ok")
@@ -37,6 +41,16 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
     {
         $orders = $orders | where-linqobject "IssueDate <= DateTime($($ToDate.Year), $($ToDate.Month), $($ToDate.Day) + 1)" | defer-query
     }
+    if ($OrderStates)
+    {
+        $stateQuery = ""
+        foreach ($state in $OrderStates) {
+            $stateQuery = $stateQuery + "State.Code = ""$state"" or "
+        }
+        $stateQuery = $stateQuery.Remove($stateQuery.Length - 4)
+        $orders = $orders | where-linqobject $stateQuery | defer-query
+    }
+    
     $taxSubtotals = $orders | select-linqobject "TaxTotal" | execute-query | % {$_.TaxSubtotal}
     $taxSubtotals = $taxSubtotals | %{ New-Object PSObject -Property @{
         Jurisdiction = $_.TaxCategory.TaxScheme.Name
@@ -55,16 +69,17 @@ Switch-AcShopContext -Site $ShopContext -ScriptBlock {
         InfoTitle = "Tax Totals"
         PageSize = 100
     }
-    $taxSubtotals | Show-ListView @props -Property `
+    $taxSubtotals | Show-ListView @props -Modal -Property `
         @{Label="Jurisdiction"; Expression={$_.Jurisdiction}},
         @{Label="Currency"; Expression={$_.Currency}},
         @{Label="Total Taxes"; Expression={$_.Amount.ToString("N02")}}
+    Close-Window
 }
 
 ----version----
 language: en
 version: 1
-revision: a6435640-7139-4c2b-9b72-80e03ec5798d
+revision: d94c907c-e876-47b1-865d-7d0f4853628f
 
 ----field----
 field: {25BED78C-4957-4165-998A-CA1B52F67497}
@@ -79,14 +94,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-a6435640-7139-4c2b-9b72-80e03ec5798d
+d94c907c-e876-47b1-865d-7d0f4853628f
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20160318T214213Z
+20161222T221731Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

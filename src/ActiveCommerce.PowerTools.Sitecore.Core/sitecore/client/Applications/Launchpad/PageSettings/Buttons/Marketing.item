@@ -8,6 +8,7 @@ name: Marketing
 master: {00000000-0000-0000-0000-000000000000}
 template: {5EE505EE-8C0C-4CBD-8815-C1B7B1F06516}
 templatekey: LaunchPad-Group
+created: 20160729T132117:636053952770000000
 
 ----field----
 field: {BA3F86A2-4A1C-4D78-B63D-91C2779C1B5E}
@@ -26,7 +27,7 @@ ar|sitecore\Sitecore Client Users|pe|+item:read|pd|-item:read|
 ----version----
 language: da
 version: 1
-revision: ddaa6f9b-c0e6-4c1b-81d1-1637d57a59c2
+revision: 119b0553-b08f-47ac-97a5-0a6f1265f1b5
 
 ----field----
 field: {B5E02AD9-D56F-4C41-A065-A133DB87BDEB}
@@ -48,7 +49,7 @@ name: __Created
 key: __created
 content-length: 16
 
-20151003T031057Z
+20160729T133327Z
 ----field----
 field: {5DD74568-4D4B-44C1-B513-0AF5F4CDA34F}
 name: __Created by
@@ -62,14 +63,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-ddaa6f9b-c0e6-4c1b-81d1-1637d57a59c2
+119b0553-b08f-47ac-97a5-0a6f1265f1b5
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20151003T031057Z
+20160729T133327Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
@@ -80,8 +81,15 @@ sitecore\admin
 ----version----
 language: de-DE
 version: 1
-revision: b3c4bd35-f522-482c-be7d-5977bf52d111
+revision: bec31643-d750-4f4b-b44c-df8c5158f966
 
+----field----
+field: {9D42566F-EF44-4C3A-B6B5-94D9397BC24D}
+name: Title
+key: title
+content-length: 20
+
+Marketinganwendungen
 ----field----
 field: {B5E02AD9-D56F-4C41-A065-A133DB87BDEB}
 name: __Display name
@@ -102,7 +110,7 @@ name: __Created
 key: __created
 content-length: 16
 
-20151003T030810Z
+20160729T133454Z
 ----field----
 field: {5DD74568-4D4B-44C1-B513-0AF5F4CDA34F}
 name: __Created by
@@ -116,14 +124,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-b3c4bd35-f522-482c-be7d-5977bf52d111
+bec31643-d750-4f4b-b44c-df8c5158f966
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20151003T030810Z
+20160729T133454Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
@@ -134,8 +142,15 @@ sitecore\admin
 ----version----
 language: en
 version: 1
-revision: 8ba09bf3-73a0-49ec-9107-1db8bc6b954a
+revision: 8fb771ec-4fe4-40cc-8032-9e88e5c97f6a
 
+----field----
+field: {9D42566F-EF44-4C3A-B6B5-94D9397BC24D}
+name: Title
+key: title
+content-length: 22
+
+Marketing Applications
 ----field----
 field: {52807595-0F8F-4B20-8D2A-CB71D28C6103}
 name: __Owner
@@ -163,14 +178,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-8ba09bf3-73a0-49ec-9107-1db8bc6b954a
+8fb771ec-4fe4-40cc-8032-9e88e5c97f6a
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
-content-length: 35
+content-length: 16
 
-20141016T101409:635490512490270152Z
+20160412T114318Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
@@ -181,8 +196,15 @@ sitecore\admin
 ----version----
 language: ja-JP
 version: 1
-revision: e15f4076-f678-4cee-a6e0-0ce9fdc080e2
+revision: 79e49c29-9b51-4a08-8c59-70809fb1d249
 
+----field----
+field: {9D42566F-EF44-4C3A-B6B5-94D9397BC24D}
+name: Title
+key: title
+content-length: 16
+
+マーケティング アプリケーション
 ----field----
 field: {B5E02AD9-D56F-4C41-A065-A133DB87BDEB}
 name: __Display name
@@ -203,7 +225,7 @@ name: __Created
 key: __created
 content-length: 16
 
-20151003T030938Z
+20160729T133621Z
 ----field----
 field: {5DD74568-4D4B-44C1-B513-0AF5F4CDA34F}
 name: __Created by
@@ -217,14 +239,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-e15f4076-f678-4cee-a6e0-0ce9fdc080e2
+79e49c29-9b51-4a08-8c59-70809fb1d249
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 16
 
-20151003T030938Z
+20160729T133621Z
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by

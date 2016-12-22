@@ -8,6 +8,7 @@ name: Functions
 master: {00000000-0000-0000-0000-000000000000}
 template: {AB154D3D-1126-4AB4-AC21-8B86E6BD70EA}
 templatekey: PowerShell Script Library
+created: 20161222T224305:636180433855570000
 
 ----version----
 language: en

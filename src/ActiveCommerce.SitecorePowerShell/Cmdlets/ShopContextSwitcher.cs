@@ -35,7 +35,7 @@ namespace ActiveCommerce.SitecorePowerShell.Cmdlets
             }
             using (new ShopContextSwitcher(site, database))
             {
-                WriteObject(ScriptBlock.InvokeReturnAsIs());
+                WriteObject(ScriptBlock.Invoke());
             }
         }
     }
